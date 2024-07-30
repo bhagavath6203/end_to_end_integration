@@ -1,0 +1,263 @@
+/* General Styles */
+body {
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f9;
+    color: #333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #333;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+header .logo img {
+    height: 40px;
+}
+
+nav a {
+    color: white;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: color 0.3s ease;
+}
+
+nav a:hover {
+    color: #ffa500;
+}
+
+.customer-table {
+    display: flex;
+    height: calc(100vh - 60px);
+}
+
+.sidebar {
+    width: 250px;
+    height: auto;
+    background-color: #151111;
+    color: #f4f4f9;
+    padding: 20px;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease;
+}
+
+
+.sidebar .logo {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar ul li {
+    padding: 15px 10px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar ul li.active {
+    background-color: #ffa500;
+    color: #333;
+}
+
+.sidebar ul li:hover {
+    background-color: #330505;
+}
+
+.content {
+    flex: 1;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #f4f4f9;
+    transition: background-color 0.3s ease;
+}
+
+.header h2 {
+    margin: 0;
+    margin-bottom: 20px;
+}
+
+/* user image */
+.avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: hsl(var(--h), 50%, 50%);
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    text-transform: uppercase;
+  }
+  
+
+.avatar .username {
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+.sidebar ul li a {
+    text-decoration: none;
+    color: inherit;
+    transition: color 0.3s ease;
+}
+
+.sidebar ul li a:hover {
+    color: #007bff;
+}
+
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.user-info {
+    text-align: center;
+}
+
+.user-info h2 {
+    margin: 0;
+}
+
+
+
+/* dark/light theme setter */
+body.dark-mode {
+    background-color: #333;
+    color: #f4f4f9;
+}
+
+body.dark-mode .content {
+    background-color: #444;
+    color: #f4f4f9;
+}
+
+
+body.dark-mode .sidebar {
+    background-color: #151111;
+}
+
+
+body.dark-mode .sidebar ul li.active {
+    background-color: #ffa500;
+    color: #444;
+}
+
+body.dark-mode .modal-content {
+    background-color: #444;
+    color: #f4f4f9;
+}
+
+.theme-switcher {
+    position: absolute;
+    top: 15px;
+    right: 90px;
+}
+
+.theme-switcher input[type="checkbox"] {
+    display: none;
+}
+
+.theme-switcher label {
+    display: inline-block;
+    padding: 10px 20px;
+    background-color: #DB7093;
+    color: #f4f4f9;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.theme-switcher input[type="checkbox"]:checked + label {
+    background-color: #f4f4f9;
+    color: #333;
+}
+
+  
+/* profile picture */
+  .profile-pic-container {
+    display: flex;
+    align-items: center;
+  }
+  
+  .profile-pic-label {
+    position: relative;
+    display: inline-block;
+    cursor: pointer;
+  }
+  
+  .profile-pic-label:hover .change-image-text {
+    display: block;
+  }
+  
+  .change-image-text {
+    position: absolute;
+    top: 100%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: none;
+    cursor: pointer;
+    font-size: 10px; 
+  }
+  /* image after adding image avatar */
+  .avatar,
+  #output {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 100px;
+    background-color: #e46eb7;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 2em;
+    background-size: cover;
+  }
+/* username welcome text */
+  .welcome-message {
+    margin-left: 20px;
+  }
+  .welcome-message h2 {
+    margin: 0;
+    font-size: 1.2em; /* Decreased the font size */
+  }
+  
+/* remove image */ 
+.profile-pic-label:hover .remove-image {
+  display: block;
+}
+.avatar:hover + .remove-image {
+  display: block;
+}
+
+.remove-image {
+    position: absolute;
+    top: 25%;
+    right: 10%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: #fff;
+    padding: 5px;
+    border-radius: 5px;
+    display: none;
+    cursor: pointer;
+    font-size: 10px; 
+  }
+  
+

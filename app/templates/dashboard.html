@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='home.css') }}">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            height: auto;
+            color: #000;
+        }
+
+        .header {
+            width: 100%;
+            background-color: #f5f5f5;
+            text-align: left;
+            padding: 20px 20px;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .header h1 {
+            margin: 0;
+            color: #000;
+        }
+
+        .main-container {
+            display: flex;
+            width: 100%;
+            height: calc(100vh - 80px);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 20px;
+            background-color: #f5f5f5;
+            overflow-y: auto;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-content .stats {
+            display: none;
+        }
+
+        .header-content .search {
+            margin-left: auto;
+        }
+
+        .header-content .search input {
+            padding: 10px;
+            width: 200px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .content {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .overview, .resolution-status {
+            width: 48%;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+
+        .overview .chart,
+        .resolution-status .chart {
+            width: 100%;
+            height: 300px;
+            margin: auto;
+        }
+
+        .class-details {
+            margin-top: 20px;
+            background-color: #fff;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            border-radius: 5px;
+        }
+
+        .class-details details {
+            margin-bottom: 10px;
+        }
+
+        .class-details details summary {
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .class-details details[open] summary {
+            color: pink;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <img src="{{ url_for('static', filename='logo.png') }}" alt="Cutica Logo">
+        </div>
+    
+        <nav>
+            <div class="theme-switcher">
+                <input type="checkbox" id="dark-mode" />
+                <label for="dark-mode"><i class="fas fa-moon"></i></label>
+            </div>
+            <a href="{{ url_for('auth.logout') }}">Logout</a>
+        </nav>
+    </header>
+
+    <div class="main-container">
+        
+        <div class="sidebar">
+            <div class="logo">
+                <img src="{{ url_for('static', filename='logo.png') }}" alt="CuTicA Logo" width="200" height="150">
+            </div>
+            <ul>
+                <li><a href="{{ url_for('auth.dashboard_page') }}"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="{{ url_for('auth.customers_page') }}"><i class="fas fa-users"></i> Customers</a></li>
+                <li><a href="{{ url_for('auth.support_team') }}"><i class="fas fa-ticket-alt"></i> Support Team</a></li>
+                <li><a href="{{ url_for('auth.account_page') }}"><i class="fas fa-user"></i> Account</a></li>
+                <li><a href="{{ url_for('auth.notification_page') }}"><i class="fas fa-bell"></i> Notification</a></li>
+                <li><a href="{{ url_for('auth.settings_page') }}"><i class="fas fa-cog"></i> Settings</a></li>
+                <li><a href="{{ url_for('auth.logout') }}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                <li><a href="{{ url_for('auth.help_page') }}"><i class="fas fa-question-circle"></i> Help</a></li>
+            </ul>
+        </div>
+        <div class="main-content">
+            <header class="header">
+                <h1>Analytic Dashboard</h1>
+            </header>
+            
+            <div class="content">
+                <div class="overview">
+                    <h3>Overview</h3>
+                    <p>Customer tickets</p>
+                    <div class="chart">
+                        <canvas id="ticketsChart"></canvas>
+                    </div>
+                </div>
+                <div class="resolution-status">
+                    <h3>Resolution status</h3>
+                    <p>Issues Resolved vs Unresolved</p>
+                    <div class="chart">
+                        <canvas id="buyProductsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="class-details" id="class-details">
+                <details>
+                    <summary>Class Details</summary>
+                    <details id="login-details">
+                        <summary>Login</summary>
+                    </details>
+                    <details id="password-reset-details">
+                        <summary>Password Reset</summary>
+                    </details>
+                    <details id="course-extension-request-details">
+                        <summary>Course Extension Request</summary>
+                    </details>
+                    <details id="course-refund-request-details">
+                        <summary>Course Refund Request</summary>
+                    </details>
+                    <details id="account-locked-details">
+                        <summary>Account Locked</summary>
+                    </details>
+                    <details id="others-details">
+                        <summary>Others</summary>
+                    </details>
+                </details>
+            </div>
+        </div>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const response = await fetch('/api/tickets');
+            const tickets = await response.json();
+
+            console.log(tickets);
+
+            // Group tickets by issue
+            const issues = {
+                "Login": [],
+                "Password Reset": [],
+                "Course Extension Request": [],
+                "Course Refund Request": [],
+                "Account Locked": [],
+                "Others": []
+            };
+
+            tickets.forEach(ticket => {
+                if (issues[ticket.issue]) {
+                    issues[ticket.issue].push(ticket);
+                } else {
+                    issues["Others"].push(ticket);
+                }
+            });
+
+            // Populate class details
+            for (const [issue, tickets] of Object.entries(issues)) {
+                const detailsElement = document.getElementById(`${issue.toLowerCase().replace(/ /g, '-')}-details`);
+                detailsElement.innerHTML += `<ul>${tickets.map(ticket => `<li>${ticket.details}</li>`).join('')}</ul>`;
+            }
+
+            // Prepare data for the bar chart
+            const issueLabels = Object.keys(issues);
+            const issueCounts = issueLabels.map(issue => issues[issue].length);
+
+            // Create bar chart
+            const ctx = document.getElementById('ticketsChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: issueLabels,
+                    datasets: [{
+                        label: 'Number of Tickets',
+                        data: issueCounts,
+                        backgroundColor: [
+                            '#FFD700',
+                            '#000000',
+                            '#FFD700',
+                            '#000000',
+                            '#FFD700',
+                            '#000000'
+                        ],
+                        borderColor: [
+                            '#FFD700',
+                            '#000000',
+                            '#FFD700',
+                            '#000000',
+                            '#FFD700',
+                            '#000000'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Tickets'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Issue Type'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+
+            // Prepare data for the pie chart
+            const resolvedCount = tickets.filter(t => t.status === 'Resolved').length;
+            const unresolvedCount = tickets.length - resolvedCount;
+
+            // Create pie chart
+            const ctx2 = document.getElementById('buyProductsChart').getContext('2d');
+            new Chart(ctx2, {
+                type: 'pie',
+                data: {
+                    labels: ['Resolved', 'Unresolved'],
+                    datasets: [{
+                        label: 'Resolution Status',
+                        data: [resolvedCount, unresolvedCount],
+                        backgroundColor: [
+                            '#28a745',
+                            '#dc3545'
+                        ],
+                        borderColor: [
+                            '#28a745',
+                            '#dc3545'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    plugins: {
+                        legend: {
+                            display: true,
+                            position: 'top'
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+</body>
+</html>

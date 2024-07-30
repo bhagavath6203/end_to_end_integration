@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% if class_details %}Edit{% else %}Add{% endif %} Class</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        .page-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100%;
+            overflow-y: auto;
+        }
+
+        .main-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .content {
+            flex-grow: 1;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .main-content {
+            width: 70%;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            margin-top: 15px;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+
+        .examples-header,
+        .autoresponses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            margin-top: 20px;
+        }
+
+        .add-example,
+        .add-autoresponse,
+        .remove-input {
+            background: none;
+            width: auto;
+            border: none;
+            cursor: pointer;
+            font-size: 1.2em;
+            color: #007bff;
+        }
+
+        .remove-input {
+            color: black;
+        }
+
+        .example-input,
+        .autoresponse-input {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .example-input input,
+        .autoresponse-input textarea {
+            flex-grow: 1;
+            margin-right: 10px;
+        }
+
+        .autoresponse-input textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            background-color: #fec053;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="content">
+        <div class="main-content">
+            <form id="classForm" action="{{ url_for('auth.edit_class', class_id=class_details.class_id) if class_details else url_for('auth.new_class_credentials') }}" method="post">
+                <label for="name">Class Name</label>
+                <input type="text" id="name" name="name" value="{{ class_details.class_name if class_details else '' }}" required>
+
+                <label for="description">Description</label>
+                <input type="text" id="description" name="description" value="{{ class_details.description if class_details else '' }}" required>
+
+                <div id="examples">
+                    <div class="examples-header">
+                        <label>Examples (minimum 3)</label>
+                        <button type="button" class="add-example"><i class="fas fa-plus"></i></button>
+                    </div>
+                    {% if class_details and examples %}
+                        {% for example in examples %}
+                            <div class="example-input">
+                                <input type="text" name="examples[]" value="{{ example.example_data }}" required>
+                                <button type="button" class="remove-input"><i class="fas fa-times"></i></button>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="example-input">
+                            <input type="text" name="examples[]" required>
+                        </div>
+                        <div class="example-input">
+                            <input type="text" name="examples[]" required>
+                        </div>
+                        <div class="example-input">
+                            <input type="text" name="examples[]" required>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div id="autoresponses">
+                    <div class="autoresponses-header">
+                        <label>Autoresponses</label>
+                    </div>
+                    {% if class_details and autoresponses %}
+                        {% for autoresponse in autoresponses %}
+                            <div class="autoresponse-input">
+                                <textarea name="autoresponses[]" rows="5">{{ autoresponse.response }}</textarea>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="autoresponse-input">
+                            <textarea name="autoresponses[]" rows="5"></textarea>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button class="submit-button" type="submit">{% if class_details %}Update{% else %}Add{% endif %} Class</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            $('.add-example').click(function () {
+                $('#examples').append('<div class="example-input"><input type="text" name="examples[]" required><button type="button" class="remove-input"><i class="fas fa-times"></i></button></div>');
+            });
+
+            $('.add-autoresponse').click(function () {
+                $('#autoresponses').append('<div class="autoresponse-input"><textarea name="autoresponses[]" rows="5"></textarea><button type="button" class="remove-input"><i class="fas fa-times"></i></button></div>');
+            });
+
+            $(document).on('click', '.remove-input', function () {
+                $(this).parent().remove();
+            });
+        });
+    </script>
+</body>
+</html>

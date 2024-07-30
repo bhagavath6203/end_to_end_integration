@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Support Team</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/sidebar.css') }}">
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        .header .search-add-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 5px 10px;
+            width: 70%;
+        }
+
+        .search-bar input {
+            border: none;
+            outline: none;
+            width: 100%;
+            padding: 5px;
+            font-size: 16px;
+        }
+
+        .search-bar i {
+            color: #000;
+            margin-right: 10px;
+        }
+
+        .header .add-support-button,
+        .add-support-button {
+            background-color: #fec053;
+            color: #000;
+            border: 1px solid #000;
+            border-radius: 4px;
+            padding: 10px 20px;
+            cursor: pointer;
+            text-align: center;
+            display: inline-block;
+            font-size: 16px;
+            text-decoration: none;
+            width: 25%;
+            white-space: nowrap;
+        }
+
+        .header .add-support-button:hover,
+        .add-support-button:hover {
+            background-color: #ff8c00;
+        }
+
+        .main-content {
+            background-color: #f4f4f9;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table th,
+        table td {
+            border: 1px solid #ccc;
+            padding: 10px;
+            text-align: left;
+        }
+
+        table th {
+            background-color: #fec053;
+            color: #000;
+        }
+
+        table td a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        table td a:hover {
+            text-decoration: underline;
+        }
+
+        .main-content table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .main-content table tr:nth-child(odd) {
+            background-color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    {% include 'header.html' %}
+    <div class="content">
+        <div class="header">
+            <div class="search-add-container">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" id="searchInput" placeholder="Search by name, email id, support ID"
+                        onkeyup="searchTable()">
+                </div>
+                <a href="{{ url_for('auth.add_support') }}" class="add-support-button">ADD SUPPORT</a>
+            </div>
+        </div>
+        <div class="main-content">
+            <table class="support-table" id="supportTable">
+                <thead>
+                    <tr>
+                        <th>Support ID</th>
+                        <th>Support name</th>
+                        <th>Email ID</th>
+                        <th>Phone number</th>
+                        <th>Active tickets</th>
+                        <th>Credentials</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for support in support_members %}
+                    <tr>
+                        <td>{{ support.support_id }}</td>
+                        <td>{{ support.name }}</td>
+                        <td>{{ support.email }}</td>
+                        <td>{{ support.phone }}</td>
+                        <td><a href="#">View</a></td>
+                        <td><a href="#">View</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/sidebar.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.3.0/papaparse.min.js"></script>
+
+    <script>
+        function searchTable() {
+            const input = document.getElementById('searchInput');
+            const filter = input.value.toUpperCase();
+            const table = document.getElementById('supportTable');
+            const rows = table.getElementsByTagName('tr');
+
+            for (let i = 1; i < rows.length; i++) {
+                const supportId = rows[i].getElementsByTagName('td')[0];
+                const name = rows[i].getElementsByTagName('td')[1];
+                const email = rows[i].getElementsByTagName('td')[2];
+
+                if (supportId || name || email) {
+                    const supportIdText = supportId.textContent || supportId.innerText;
+                    const nameText = name.textContent || name.innerText;
+                    const emailText = email.textContent || email.innerText;
+
+                    if (supportIdText.toUpperCase().indexOf(filter) > -1 ||
+                        nameText.toUpperCase().indexOf(filter) > -1 ||
+                        emailText.toUpperCase().indexOf(filter) > -1) {
+                        rows[i].style.display = "";
+                    } else {
+                        rows[i].style.display = "none";
+                    }
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>
