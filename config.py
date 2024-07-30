@@ -11,7 +11,7 @@ class Config:
     if MONGO_USERNAME is None or MONGO_PASSWORD is None:
         raise ValueError("Environment variables MONGO_USERNAME and MONGO_PASSWORD must be set")
     
-    MONGO_URI = f"mongodb+srv://bhagavath11ab:01012002@cluster0.tsgk9f6.mongodb.net/cutica_db?retryWrites=true&w=majority&appName=Cluster0"
+    MONGO_URI = f"mongodb+srv://{username}:{password}@cluster0.tsgk9f6.mongodb.net/cutica_db?retryWrites=true&w=majority&appName=Cluster0"
 
     ATLAS_API_KEY_PUBLIC = os.getenv('ATLAS_API_KEY_PUBLIC')
     ATLAS_API_KEY_PRIVATE = os.getenv('ATLAS_API_KEY_PRIVATE')
